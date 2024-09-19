@@ -1,0 +1,37 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+      <h3> All Posts</h3>
+      {% if user.is_authenticated  %}
+          {% for post in pagePosts %}
+           <div class="style_border">
+             <div  class="mx-3">
+              <h3><a href ="{% url 'profile' post.author.id%}">{{post.author.username}}</a></h3>
+              <h6>{{post.content}}</h6>
+              {% if post.is_liked %}
+               <i id="like-{{ post.id }}" class="fas fa-heart" style="color:red;" data-post-id="{{ post.id }}"></i>
+                {% else %}
+               <i id="like-{{ post.id }}" class="far fa-heart" style="color:black;" data-post-id="{{ post.id }}"></i>
+               {% endif %}
+              <h6 class="timestamp">{{post.timestamp}}</h6>
+            </div>
+          </div>
+         </br>
+
+        {% endfor %}
+              <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                  {% if pagePosts.has_previous %}
+                  <li class="page-item"><a class="page-link" href="?page={ pagePosts.previous_page_number }}">Previous</a></li>
+                 {% endif %}
+                 {% if pagePosts.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{ pagePosts.next_page_number }}">Next</a></li>
+                 {% endif %}
+                </ul>
+              </nav>
+        {% endif %}
+{% endblock %}
+{% block script %}
+    <script src="{% static 'network/network.js' %}"></script>
+  {% endblock %}

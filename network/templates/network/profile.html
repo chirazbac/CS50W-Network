@@ -1,0 +1,78 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+      <h3> All Posts</h3>
+       <div >
+         <div class="row">
+           <div class="col-4 bg-light p-3 text-dark">
+                <h5>{{username}} </h5>
+            </div>
+            <div class="col-3 bg-light p-3 text-dark">
+                  <h4> Followers: {{followers.count}}</h4>
+            </div>
+            <div class="col-3 bg-light p-3 text-dark">
+                 <h5>Followings: {{followings.count}}</h5>
+            </div>
+            {% if user.is_authenticated %}
+             {% if user != user_profile %}
+
+            <div class="col-2 bg-light p-3 text-dark">
+                {% if is_following %}
+               <form action="{% url 'unfollow'  %}" method="POST">
+                    {% csrf_token %}
+                  <input  name="unfollow" type="hidden" value="{{user_profile}}">
+                    <button type="submit" class="btn btn-primary">
+                    Unfollow </button>
+                 {% else %}
+                <form action="{% url 'follow'  %}" method="POST">
+                    {% csrf_token %}
+                    <input   name="follow" type="hidden" value="{{user_profile}}" >
+                  <button type="submit" class="btn btn-primary">
+                  Follow </button>
+                </form>
+                {% endif %}
+                </div>
+            {% endif %}
+          {% endif %}
+
+          </div>
+        </div>
+      </br>
+      {% for post in pagePosts %}
+       <div class="style_border">
+         <div  class="mx-3">
+          <h3><a href ="{% url 'profile' post.author.id%}">{{post.author.username}}</a></h3>
+                {% if user.is_authenticated %}
+                {% if post.author == user %}
+               <strong> <a id="edit-{{post.id}}" class="edit-link" data-post-id="{{ post.id }}" href="javascript:void(0);">Edit</a> </strong>
+                {% endif %}
+                {% endif %}
+                <h6 id="content-{{post.id}}" >{{post.content}}</h6>
+               {% if user.is_authenticated %}
+                {% if post.is_liked %}
+                  <i id="like-{{ post.id }}" class="fas fa-heart" style="color:red;" data-post-id="{{ post.id }}"></i>
+                {% else %}
+                 <i id="like-{{ post.id }}" class="far fa-heart" style="color:black;" data-post-id="{{ post.id }}"></i>
+                 {% endif %}
+                {% endif %}
+                <span id="like-count-{{post.id}}" >{{post.post_like.count}}</span>
+                <h6 class="timestamp">{{post.timestamp}}</h6>
+        </div>
+      </div>
+     </br>
+    {% endfor %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          {% if pagePosts.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={ pagePosts.previous_page_number }}">Previous</a></li>
+         {% endif %}
+         {% if pagePosts.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ pagePosts.next_page_number }}">Next</a></li>
+         {% endif %}
+        </ul>
+      </nav>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'network/network.js' %}"></script>
+ {% endblock %}

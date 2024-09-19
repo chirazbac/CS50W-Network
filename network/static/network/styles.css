@@ -1,0 +1,14 @@
+.style_border{
+    border: 1px solid darkgray;
+    align-items: center;
+    padding: 12px 0;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.timestamp{
+    color: gray;
+}
+
+
+
+
